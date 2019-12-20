@@ -31,7 +31,7 @@ const getRandomArrayItem = (array) => {
 };
 
 const getRandomIntegerNumber = (min, max) => {
-  return min + Math.floor(max * Math.random());
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 const getRandomDate = () => {
@@ -71,9 +71,11 @@ const generateTask = () => {
 };
 
 const generateTasks = (count) => {
-  return new Array(count)
-    .fill(``)
-    .map(generateTask);
+  const tasks = [];
+  for (let i = 0; i < count; i++) {
+    tasks.push(generateTask());
+  }
+  return tasks;
 };
 
 export {generateTask, generateTasks};

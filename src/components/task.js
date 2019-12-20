@@ -34,6 +34,18 @@ export const createTaskTemplate = (task) => {
   const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
   const time = isDateShowing ? formatTime(dueDate) : ``;
 
+  // add repeating days in cards:
+  let repeatingDaysArray = [];
+  if (!dueDate) {
+    for (const key in repeatingDays) {
+      if (repeatingDays[key] === true) {
+        repeatingDaysArray.push(key);
+      }
+    }
+    repeatingDaysArray = repeatingDaysArray.length > 0 ? repeatingDaysArray : ``;
+    repeatingDaysArray = repeatingDaysArray ? repeatingDaysArray.join(`,`) : ``;
+  }
+
   const hashtags = createHashtagsMarkup(Array.from(tags));
   const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
   const deadlineClass = isExpired ? `card--deadline` : ``;
@@ -69,7 +81,7 @@ export const createTaskTemplate = (task) => {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">${date}</span>
+                    <span class="card__date">${date}${repeatingDaysArray}</span>
                     <span class="card__time">${time}</span>
                   </p>
                 </div>
