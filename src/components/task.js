@@ -42,8 +42,7 @@ export const createTaskTemplate = (task) => {
         repeatingDaysArray.push(key);
       }
     }
-    repeatingDaysArray = repeatingDaysArray.length > 0 ? repeatingDaysArray : ``;
-    repeatingDaysArray = repeatingDaysArray ? repeatingDaysArray.join(`,`) : ``;
+    repeatingDaysArray = repeatingDaysArray.join(`,`);
   }
 
   const hashtags = createHashtagsMarkup(Array.from(tags));
