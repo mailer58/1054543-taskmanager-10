@@ -3,9 +3,11 @@ import {
   COLORS
 } from './../const.js';
 
+import {createElement} from '../utils.js';
+
 const initTags = [`repeat`, `cinema`, `entertaiment`];
 
-export const createTaskEditTemplate = () => {
+const createTaskEditTemplate = () => {
   let taskEditTemplate = [];
   taskEditTemplate.push(
       `<article class="card card--edit card--yellow card--repeat">
@@ -105,3 +107,26 @@ export const createTaskEditTemplate = () => {
   taskEditTemplate = taskEditTemplate.join(`\n`);
   return taskEditTemplate;
 };
+
+export default class TaskEdit {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
