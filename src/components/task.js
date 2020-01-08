@@ -1,10 +1,6 @@
-import {
-  MONTH_NAMES
-} from '../const.js';
-import {
-  formatTime,
-  createElement
-} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
+import {MONTH_NAMES} from '../const.js';
+import {formatTime} from '../utils/common.js';
 
 const createHashtagsMarkup = (hashtags) => {
   return hashtags
@@ -21,30 +17,16 @@ const createHashtagsMarkup = (hashtags) => {
 };
 
 const createTaskTemplate = (task) => {
-  const {
-    description,
-    tags,
-    dueDate,
-    color,
-    repeatingDays
-  } = task;
+  // Подсказка:
+  // Все работу производим заранее. Внутри шаблонной строки никаких вычислений не делаем,
+  // потому что внутри большой разметки сложно искать какой-либо код.
+  const {description, tags, dueDate, color, repeatingDays} = task;
 
   const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const isDateShowing = !!dueDate;
 
   const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
   const time = isDateShowing ? formatTime(dueDate) : ``;
-
-  // add repeating days in cards:
-  let repeatingDaysArray = [];
-  if (!dueDate) {
-    for (const key in repeatingDays) {
-      if (repeatingDays[key] === true) {
-        repeatingDaysArray.push(key);
-      }
-    }
-    repeatingDaysArray = repeatingDaysArray.join(`,`);
-  }
 
   const hashtags = createHashtagsMarkup(Array.from(tags));
   const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
@@ -81,7 +63,7 @@ const createTaskTemplate = (task) => {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">${date}${repeatingDaysArray}</span>
+                    <span class="card__date">${date}</span>
                     <span class="card__time">${time}</span>
                   </p>
                 </div>
@@ -95,31 +77,23 @@ const createTaskTemplate = (task) => {
           </div>
         </div>
       </div>
-    </div>
-  </article>`
+    </article>`
   );
 };
 
-export default class Task {
+export default class Task extends AbstractComponent {
   constructor(task) {
-    this._task = task;
+    super();
 
-    this._element = null;
+    this._task = task;
   }
 
   getTemplate() {
     return createTaskTemplate(this._task);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, handler);
   }
 }
